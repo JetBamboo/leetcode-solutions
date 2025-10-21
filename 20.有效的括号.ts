@@ -5,38 +5,35 @@
  */
 
 class Stack {
-    #db: string[]
+    #items: string[]
     constructor () {
-        this.#db = []
+        this.#items = []
     }
     size () {
-        return this.#db.length;
+        return this.#items.length;
     }
     isEmpty () {
         return this.size() === 0;
     }
     push (item: string) {
-        this.#db.push(item)
+        return this.#items.push(item)
     }
     pop () {
-        if (this.isEmpty()) {
-            return null;
-        }
-        return this.#db.pop()
+        return this.#items.pop()
     }
     peek () {
-        if (this.isEmpty()) {
-            return null;
-        }
-        return this.#db[this.size() - 1]
+        return this.#items.at(-1);
     }
 }
 
 // @lc code=start
 export default function isValid(s: string): boolean {
     const stack = new Stack()
-    const left = ['(', '{', '['];
-    const right = [')', '}', ']'];
+    const map: Record<string, string> = {
+        '(': ')',
+        '{': '}',
+        '[': ']',
+    }
 
     /**
      * 思路：遇到左括号就入栈
@@ -44,12 +41,11 @@ export default function isValid(s: string): boolean {
      * 如果是就出栈，如果不是就返回false
      * 循环结束栈为空代表检测完成返回true
      */
-    for (let i = 0; i < s.length; i++) {
-        if (left.includes(s[i])) {
-            stack.push(s[i]);
+    for (let char of s) {
+        if (map[char]) {
+            stack.push(map[char]);
         } else {
-            const type = right.indexOf(s[i]);
-            if (stack.peek() !== left[type]) {
+            if (stack.peek() !== char) {
                 return false;
             } 
             stack.pop()
